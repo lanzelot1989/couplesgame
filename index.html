@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paarspiel – Gemeinsam wachsen</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffe0e9, #e0f7ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 90%;
+      width: 600px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .category {
+      font-size: 1rem;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin: 2rem 0;
+      min-height: 100px;
+      color: #444;
+    }
+    button {
+      background-color: #ff6699;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      color: white;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #e05585;
+    }
+    @media (max-width: 500px) {
+      .question {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Paarspiel – Gemeinsam wachsen</h1>
+    <div class="category" id="category">❤️ Kategorie</div>
+    <div class="question" id="question">Klicke auf "Nächste Frage"!</div>
+    <button onclick="nextQuestion()">Nächste Frage</button>
+  </div>
+
+  <script>
+    const categories = [
+      { name: "Kommunikation", emoji: "🗣️" },
+      { name: "Intimität & Nähe", emoji: "💞" },
+      { name: "Zukunft & Träume", emoji: "🌟" },
+      { name: "Konflikt & Lösung", emoji: "⚖️" },
+      { name: "Wertschätzung & Alltag", emoji: "🏡" }
+    ];
+
+    const questions = [
+      // Kommunikation (1–20)
+      { q: "Wie fühlst du dich, wenn wir über schwierige Themen sprechen?", c: 0 },
+      { q: "Was kann ich tun, damit du dich besser verstanden fühlst?", c: 0 },
+      { q: "Welche Art von Kommunikation tut dir besonders gut?", c: 0 },
+      { q: "Wie zeigst du mir am liebsten, dass du mich liebst?", c: 0 },
+      { q: "Wann fühltest du dich das letzte Mal wirklich gehört von mir?", c: 0 },
+      { q: "Welche Worte möchtest du öfter von mir hören?", c: 0 },
+      { q: "Wie können wir Streit konstruktiver lösen?", c: 0 },
+      { q: "Was war unser bisher ehrlichstes Gespräch?", c: 0 },
+      { q: "Wie können wir in stressigen Zeiten besser miteinander umgehen?", c: 0 },
+      { q: "Was hilft dir, dich mir zu öffnen?", c: 0 },
+      { q: "Gibt es etwas, das du mir noch nie gesagt hast, aber sagen möchtest?", c: 0 },
+      { q: "Wie oft brauchst du tiefgehende Gespräche?", c: 0 },
+      { q: "Fühlst du dich von mir emotional unterstützt?", c: 0 },
+      { q: "Gibt es Themen, die wir öfter besprechen sollten?", c: 0 },
+      { q: "Wie gehst du mit Kritik um?", c: 0 },
+      { q: "Was wünschst du dir, wenn du traurig bist?", c: 0 },
+      { q: "Wie zeigst du mir deine Anerkennung?", c: 0 },
+      { q: "Was war das schönste Kompliment, das ich dir gemacht habe?", c: 0 },
+      { q: "Wie können wir besser zuhören?", c: 0 },
+      { q: "Was bedeutet für dich \"gute Kommunikation\"?", c: 0 },
+
+      // Intimität & Nähe (21–40)
+      { q: "Was bedeutet Nähe für dich?", c: 1 },
+      { q: "Wann fühlst du dich mir am nächsten?", c: 1 },
+      { q: "Wie hat sich unsere Intimität verändert?", c: 1 },
+      { q: "Gibt es etwas Neues, das du mit mir ausprobieren möchtest?", c: 1 },
+      { q: "Was bringt dich zum Lächeln, wenn wir allein sind?", c: 1 },
+      { q: "Wann hast du dich zuletzt richtig begehrt gefühlt?", c: 1 },
+      { q: "Wie können wir unsere Zärtlichkeit im Alltag stärken?", c: 1 },
+      { q: "Was ist dein Lieblingsmoment zu zweit?", c: 1 },
+      { q: "Was war unser romantischstes Erlebnis?", c: 1 },
+      { q: "Wie fühlst du dich nach körperlicher Nähe?", c: 1 },
+      { q: "Was schätzt du an unserem Liebesleben?", c: 1 },
+      { q: "Was macht dich nervös beim Thema Intimität?", c: 1 },
+      { q: "Wie oft brauchst du körperliche Nähe?", c: 1 },
+      { q: "Was bedeutet Leidenschaft für dich?", c: 1 },
+      { q: "Wie können wir gemeinsam neue Nähe erleben?", c: 1 },
+      { q: "Welche Geste von mir lässt dich sicher fühlen?", c: 1 },
+      { q: "Wie drückst du Zuneigung am liebsten aus?", c: 1 },
+      { q: "Was war unser lustigster gemeinsamer Moment im Bett?", c: 1 },
+      { q: "Was möchtest du öfter erleben mit mir?", c: 1 },
+      { q: "Gibt es etwas, das du gerne sagen würdest, dich aber nicht traust?", c: 1 },
+
+      // Zukunft & Träume (41–60)
+      { q: "Was ist ein großer Traum, den du noch verwirklichen willst?", c: 2 },
+      { q: "Wo siehst du uns in fünf Jahren?", c: 2 },
+      { q: "Was macht dir Hoffnung für unsere gemeinsame Zukunft?", c: 2 },
+      { q: "Was bedeutet für dich ein erfülltes Leben?", c: 2 },
+      { q: "Was möchtest du mit mir noch unbedingt erleben?", c: 2 },
+      { q: "Wie stellst du dir unser Leben im Alter vor?", c: 2 },
+      { q: "Welche gemeinsamen Rituale könnten wir etablieren?", c: 2 },
+      { q: "Was gibt dir Sicherheit in unserer Beziehung?", c: 2 },
+      { q: "Welche Werte willst du mit mir teilen?", c: 2 },
+      { q: "Was wäre ein ideales Wochenende für dich in der Zukunft?", c: 2 },
+      { q: "Gibt es ein gemeinsames Projekt, das du dir wünschst?", c: 2 },
+      { q: "Wie können wir unsere Träume besser unterstützen?", c: 2 },
+      { q: "Was wäre dein perfekter gemeinsamer Urlaub?", c: 2 },
+      { q: "Wie wichtig ist dir finanzielle Sicherheit?", c: 2 },
+      { q: "Was motiviert dich, gemeinsam durch schwierige Zeiten zu gehen?", c: 2 },
+      { q: "Was würdest du gerne von mir lernen?", c: 2 },
+      { q: "Wie sieht dein Traumbereich in unserem Zuhause aus?", c: 2 },
+      { q: "Was willst du im Leben noch entdecken – mit mir?", c: 2 },
+      { q: "Wie können wir neue Ziele setzen?", c: 2 },
+      { q: "Was wäre dein größter Wunsch für unsere Beziehung?", c: 2 },
+
+      // Konflikt & Lösung (61–80)
+      { q: "Wie gehst du mit Streit um?", c: 3 },
+      { q: "Was hilft dir, dich nach einem Konflikt zu versöhnen?", c: 3 },
+      { q: "Wann warst du zuletzt enttäuscht von mir?", c: 3 },
+      { q: "Wie können wir Missverständnisse besser klären?", c: 3 },
+      { q: "Was brauchst du, wenn du wütend bist?", c: 3 },
+      { q: "Wie können wir uns besser verzeihen?", c: 3 },
+      { q: "Was war unser größter Konflikt und was haben wir daraus gelernt?", c: 3 },
+      { q: "Wie können wir Streit vermeiden, ohne Dinge zu unterdrücken?", c: 3 },
+      { q: "Welche Streitkultur wünschst du dir?", c: 3 },
+      { q: "Wie reagierst du auf Rückzug oder Schweigen?", c: 3 },
+      { q: "Was ist deine größte Angst in Konflikten mit mir?", c: 3 },
+      { q: "Wie helfen uns Pausen im Streit?", c: 3 },
+      { q: "Welche Lösung hat dich mal überrascht?", c: 3 },
+      { q: "Wie können wir nach einem Streit wieder Nähe aufbauen?", c: 3 },
+      { q: "Gibt es Trigger, die du mir erklären möchtest?", c: 3 },
+      { q: "Wie hat sich unsere Konfliktlösung entwickelt?", c: 3 },
+      { q: "Was bedeutet für dich Kompromissbereitschaft?", c: 3 },
+      { q: "Wie können wir achtsamer streiten?", c: 3 },
+      { q: "Was brauchst du, um Kritik anzunehmen?", c: 3 },
+      { q: "Was möchtest du mir in Konflikten mehr zeigen können?", c: 3 },
+
+      // Wertschätzung & Alltag (81–100)
+      { q: "Was schätzt du im Alltag besonders an mir?", c: 4 },
+      { q: "Welche kleinen Gesten bedeuten dir viel?", c: 4 },
+      { q: "Wie fühlt sich ein perfekter gemeinsamer Abend an?", c: 4 },
+      { q: "Was kann ich tun, um dir den Alltag zu erleichtern?", c: 4 },
+      { q: "Wie zeigt sich für dich Liebe im Alltag?", c: 4 },
+      { q: "Was bedeutet Dankbarkeit in unserer Beziehung?", c: 4 },
+      { q: "Was motiviert dich an unserem gemeinsamen Leben?", c: 4 },
+      { q: "Wie zeigst du mir im Alltag, dass ich dir wichtig bin?", c: 4 },
+      { q: "Welche Gewohnheit von uns liebst du?", c: 4 },
+      { q: "Wann fühlst du dich besonders verbunden mit mir?", c: 4 },
+      { q: "Was macht dich im Alltag glücklich mit mir?", c: 4 },
+      { q: "Was tust du bewusst für unsere Beziehung?", c: 4 },
+      { q: "Wie sieht ein idealer gemeinsamer Morgen aus?", c: 4 },
+      { q: "Was hilft dir, nach einem stressigen Tag zu entspannen – mit mir?", c: 4 },
+      { q: "Welche alltägliche Sache genießt du heimlich mit mir?", c: 4 },
+      { q: "Wie kann ich dir besser helfen, ohne dass du fragen musst?", c: 4 },
+      { q: "Was war dein Lieblingsmoment mit mir diese Woche?", c: 4 },
+      { q: "Wie zeigen wir uns gegenseitig Anerkennung?", c: 4 },
+      { q: "Was möchtest du mehr würdigen lernen – an mir oder uns?", c: 4 },
+      { q: "Wie können wir den Alltag liebevoller gestalten?", c: 4 }
+    ];
+
+    function nextQuestion() {
+      const randomIndex = Math.floor(Math.random() * questions.length);
+      const question = questions[randomIndex];
+      const category = categories[question.c];
+
+      document.getElementById('question').textContent = question.q;
+      document.getElementById('category').textContent = `${category.emoji} ${category.name}`;
+    }
+  </script>
+</body>
+</html>
